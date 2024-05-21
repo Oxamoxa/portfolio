@@ -9,6 +9,7 @@ type Props = {
 		title: string;
 		description: string;
 		repository?: string;
+		documentation?: string;
 	};
 };
 export const Header: React.FC<Props> = ({ project }) => {
@@ -24,8 +25,14 @@ export const Header: React.FC<Props> = ({ project }) => {
 	}
 	if (project.url) {
 		links.push({
-			label: "Website",
+			label: "Site",
 			href: project.url,
+		});
+	}
+	if (project.documentation) {
+		links.push({
+			label: "Docs",
+			href: "130.180.210.106:40443/cgi-bin/",
 		});
 	}
 	useEffect(() => {
