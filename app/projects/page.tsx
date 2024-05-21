@@ -36,7 +36,7 @@ export default async function ProjectsPage() {
             Projects
           </h2>
           <p className="mt-4 text-zinc-400">
-            Some of the projects are from work and some are on my own time.
+          Ici sont regroupés certains de mes projets, qu'ils soient réalisés seul ou bien en groupe, durant mes années de BTS SIO.
           </p>
         </div>
         <div className="w-full h-px bg-zinc-800" />
