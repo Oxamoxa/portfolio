@@ -1,5 +1,5 @@
 "use client";
-import { ArrowLeft, Eye, Github, Twitter } from "lucide-react";
+import { ArrowLeft, Eye, Github, Linkedin } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -9,7 +9,6 @@ type Props = {
 		title: string;
 		description: string;
 		repository?: string;
-		documentation?: string;
 	};
 };
 export const Header: React.FC<Props> = ({ project }) => {
@@ -27,12 +26,6 @@ export const Header: React.FC<Props> = ({ project }) => {
 		links.push({
 			label: "Site",
 			href: project.url,
-		});
-	}
-	if (project.documentation) {
-		links.push({
-			label: "Docs",
-			href: project.documentation,
 		});
 	}
 	useEffect(() => {
@@ -59,7 +52,7 @@ export const Header: React.FC<Props> = ({ project }) => {
 			>
 				<div className="container flex flex-row-reverse items-center justify-between p-6 mx-auto">
 					<div className="flex justify-between gap-8">
-						<Link target="_blank" href="https://twitter.com/chronark_">
+						<Link target="_blank" href="https://www.linkedin.com/in/roman-bourguignon-2703a730b/">
 							<Twitter
 								className={`w-6 h-6 duration-200 hover:font-medium ${
 									isIntersecting
@@ -68,7 +61,7 @@ export const Header: React.FC<Props> = ({ project }) => {
 								} `}
 							/>
 						</Link>
-						<Link target="_blank" href="https://github.com/chronark">
+						<Link target="_blank" href="https://github.com/Oxamoxa">
 							<Github
 								className={`w-6 h-6 duration-200 hover:font-medium ${
 									isIntersecting
