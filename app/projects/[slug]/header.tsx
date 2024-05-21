@@ -53,7 +53,7 @@ export const Header: React.FC<Props> = ({ project }) => {
 				<div className="container flex flex-row-reverse items-center justify-between p-6 mx-auto">
 					<div className="flex justify-between gap-8">
 						<Link target="_blank" href="https://www.linkedin.com/in/roman-bourguignon-2703a730b/">
-							<Twitter
+							<Linkedin
 								className={`w-6 h-6 duration-200 hover:font-medium ${
 									isIntersecting
 										? " text-zinc-400 hover:text-zinc-100"
