@@ -32,7 +32,7 @@ export const Header: React.FC<Props> = ({ project }) => {
 	if (project.documentation) {
 		links.push({
 			label: "Docs",
-			href: "130.180.210.106:40443/cgi-bin/",
+			href: project.documentation,
 		});
 	}
 	useEffect(() => {
