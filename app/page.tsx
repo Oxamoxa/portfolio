@@ -3,7 +3,7 @@ import React from "react";
 import Particles from "./components/particles";
 
 const navigation = [
-  { name: "Projects", href: "/projects" },
+  { name: "Projets", href: "/projects" },
   { name: "Contact", href: "/contact" },
   { name: "Documentation", href: "https://130.180.210.106:40443/cgi-bin/"},
 ];
@@ -39,5 +39,8 @@ export default function Home() {
       </div>
     </div>
   );
+
+
+  
 
 }

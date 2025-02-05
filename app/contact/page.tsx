@@ -1,8 +1,11 @@
 "use client";
+import { useState, useEffect } from "react";
 import { Github, Mail, Linkedin } from "lucide-react";
 import Link from "next/link";
 import { Navigation } from "../components/nav";
 import { Card } from "../components/card";
+
+const siteKey = "6Lcd1MwqAAAAAM1Iy63U0qKsTAAv8IISWeCtxBUL"; 
 
 const socials = [
 	{
@@ -25,18 +28,66 @@ const socials = [
 	},
 ];
 
-export default function Example() {
+export default function ContactPage() {
+	const [status, setStatus] = useState("");
+	const [recaptchaToken, setRecaptchaToken] = useState("");
+
+	useEffect(() => {
+		// Charger le script de reCAPTCHA
+		const script = document.createElement("script");
+		script.src = `https://www.google.com/recaptcha/api.js`;
+		script.async = true;
+		script.defer = true;
+		document.body.appendChild(script);
+	}, []);
+
+	async function handleSubmit(e) {
+		e.preventDefault();
+		setStatus("Envoi en cours...");
+
+		// Vérifier si le token reCAPTCHA est bien généré
+		const token = document.getElementById("g-recaptcha-response").value;
+		if (!token) {
+			setStatus("Veuillez cocher la case reCAPTCHA.");
+			return;
+		}
+
+		setRecaptchaToken(token);
+
+		const formData = {
+			name: e.target.name.value,
+			email: e.target.email.value,
+			message: e.target.message.value,
+			recaptchaToken: token, // On envoie le token au backend
+		};
+
+		const response = await fetch("/api/contact", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(formData),
+		});
+
+		if (response.ok) {
+			setStatus("Message envoyé avec succès !");
+			e.target.reset();
+		} else {
+			setStatus("Erreur lors de l'envoi du message.");
+		}
+	}
+
 	return (
-		<div className=" bg-gradient-to-tl from-zinc-900/0 via-zinc-900 to-zinc-900/0">
+		<div className="bg-gradient-to-tl from-zinc-900/0 via-zinc-900 to-zinc-900/0">
 			<Navigation />
-			<div className="container flex items-center justify-center min-h-screen px-4 mx-auto">
+
+			{/* Section Socials */}
+			<div className="container flex items-center justify-center min-h-[70vh] px-4 mx-auto">
 				<div className="grid w-full grid-cols-1 gap-8 mx-auto mt-32 sm:mt-0 sm:grid-cols-3 lg:gap-16">
-					{socials.map((s) => (
-						<Card>
+					{socials.map((s, index) => (
+						<Card key={index}>
 							<Link
 								href={s.href}
 								target="_blank"
-								className="p-4 relative flex flex-col items-center gap-4 duration-700 group md:gap-8 md:py-24  lg:pb-48  md:p-16"
+								className="p-4 relative flex flex-col items-center gap-4 duration-700 group md:gap-8 md:py-24 lg:pb-48 md:p-16"
 							>
 								<span
 									className="absolute w-px h-2/3 bg-gradient-to-b from-zinc-500 via-zinc-500/50 to-transparent"
@@ -44,7 +95,7 @@ export default function Example() {
 								/>
 								<span className="relative z-10 flex items-center justify-center w-12 h-12 text-sm duration-1000 border rounded-full text-zinc-200 group-hover:text-white group-hover:bg-zinc-900 border-zinc-500 bg-zinc-900 group-hover:border-zinc-200 drop-shadow-orange">
 									{s.icon}
-								</span>{" "}
+								</span>
 								<div className="z-10 flex flex-col items-center">
 									<span className="lg:text-xl font-medium duration-150 xl:text-3xl text-zinc-200 group-hover:text-white font-display">
 										{s.handle}
@@ -57,6 +108,62 @@ export default function Example() {
 						</Card>
 					))}
 				</div>
+			</div>
+
+			{/* Formulaire de contact */}
+			<div className="container mx-auto px-4 py-16">
+				<h2 className="text-3xl font-bold text-center mb-8 text-white">Me contacter</h2>
+				<form onSubmit={handleSubmit} className="max-w-lg mx-auto space-y-6">
+					<div>
+						<label htmlFor="name" className="block text-sm font-medium text-gray-300">
+							Nom
+						</label>
+						<input
+							type="text"
+							name="name"
+							id="name"
+							placeholder="Votre nom"
+							required
+							className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 bg-zinc-800 text-white"
+						/>
+					</div>
+					<div>
+						<label htmlFor="email" className="block text-sm font-medium text-gray-300">
+							Email
+						</label>
+						<input
+							type="email"
+							name="email"
+							id="email"
+							placeholder="Votre email"
+							required
+							className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 bg-zinc-800 text-white"
+						/>
+					</div>
+					<div>
+						<label htmlFor="message" className="block text-sm font-medium text-gray-300">
+							Message
+						</label>
+						<textarea
+							name="message"
+							id="message"
+							rows="4"
+							placeholder="Votre message"
+							required
+							className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 bg-zinc-800 text-white"
+						></textarea>
+					</div>
+
+					{/* reCAPTCHA v2 case à cocher */}
+					<div className="g-recaptcha" data-sitekey={siteKey}></div>
+
+					<div>
+						<button type="submit" className="w-full py-2 px-4 text-white bg-indigo-600 hover:bg-indigo-700 rounded-md">
+							Envoyer
+						</button>
+					</div>
+					<p className="text-center text-sm text-white">{status}</p>
+				</form>
 			</div>
 		</div>
 	);
