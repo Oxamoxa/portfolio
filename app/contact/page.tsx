@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Navigation } from "../components/nav";
 import { Card } from "../components/card";
 
-const siteKey = "6Lcd1MwqAAAAAM1Iy63U0qKsTAAv8IISWeCtxBUL"; 
+const siteKey = "6Lcd1MwqAAAAAM1Iy63U0qKsTAAv8IISWeCtxBUL";
 
 const socials = [
 	{
@@ -41,12 +41,22 @@ export default function ContactPage() {
 		document.body.appendChild(script);
 	}, []);
 
-	async function handleSubmit(e) {
+	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
 		setStatus("Envoi en cours...");
 
+		// Assurer que e.target est bien un formulaire
+		const form = e.target as HTMLFormElement;
+
+		// Récupérer la valeur des champs
+		const name = (form.elements.namedItem("name") as HTMLInputElement)?.value;
+		const email = (form.elements.namedItem("email") as HTMLInputElement)?.value;
+		const message = (form.elements.namedItem("message") as HTMLTextAreaElement)?.value;
+
 		// Vérifier si le token reCAPTCHA est bien généré
-		const token = document.getElementById("g-recaptcha-response").value;
+		const tokenElement = document.getElementById("g-recaptcha-response") as HTMLInputElement | null;
+		const token = tokenElement?.value;
+
 		if (!token) {
 			setStatus("Veuillez cocher la case reCAPTCHA.");
 			return;
@@ -54,13 +64,9 @@ export default function ContactPage() {
 
 		setRecaptchaToken(token);
 
-		const formData = {
-			name: e.target.name.value,
-			email: e.target.email.value,
-			message: e.target.message.value,
-			recaptchaToken: token, // On envoie le token au backend
-		};
+		const formData = { name, email, message, recaptchaToken: token };
 
+		// Envoi des données au backend
 		const response = await fetch("/api/contact", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -69,7 +75,7 @@ export default function ContactPage() {
 
 		if (response.ok) {
 			setStatus("Message envoyé avec succès !");
-			e.target.reset();
+			form.reset();
 		} else {
 			setStatus("Erreur lors de l'envoi du message.");
 		}
@@ -147,7 +153,7 @@ export default function ContactPage() {
 						<textarea
 							name="message"
 							id="message"
-							rows="4"
+							rows={4}
 							placeholder="Votre message"
 							required
 							className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 bg-zinc-800 text-white"
