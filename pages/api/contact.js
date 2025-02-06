@@ -1,9 +1,15 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
+    console.log("Méthode HTTP reçue:", req.method);
+
     if (req.method !== "POST") {
+        console.log("Erreur : méthode non autorisée");
         return res.status(405).json({ error: "Méthode non autorisée" });
     }
+
+    console.log("Requête POST acceptée, données reçues :", req.body);
+
 
     const { name, email, message, recaptchaToken } = req.body;
 
@@ -43,10 +49,10 @@ try {
                <p><strong>Message:</strong> ${message}</p>`,
     });
 
-    console.log("✅ Email envoyé avec succès !");
+    console.log("Email envoyé avec succès !");
     res.status(200).json({ message: "Email envoyé avec succès !" });
 } catch (error) {
-    console.error("❌ Erreur d'envoi d'email:", error);
+    console.error("Erreur d'envoi d'email:", error);
     res.status(500).json({ message: "Erreur lors de l'envoi de l'email", error: error.message });
 }
 
