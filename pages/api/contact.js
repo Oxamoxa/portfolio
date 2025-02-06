@@ -1,48 +1,41 @@
 import nodemailer from "nodemailer";
 
 export default async function handler(req, res) {
+    // Forcer le parsing JSON (utile si Next.js ne le fait pas en prod)
+    if (!req.body || typeof req.body !== "object") {
+        let body = "";
+        req.on("data", (chunk) => {
+            body += chunk.toString();
+        });
+        req.on("end", () => {
+            try {
+                req.body = JSON.parse(body);
+                console.log("Corps de la requête parsé :", req.body);
+                handleRequest(req, res);
+            } catch (error) {
+                console.error("Erreur de parsing JSON :", error);
+                return res.status(400).json({ error: "Corps de la requête invalide" });
+            }
+        });
+        return;
+    }
+    handleRequest(req, res);
+}
+
+async function handleRequest(req, res) {
     console.log("Méthode HTTP reçue:", req.method);
-    console.log("Contenu de req.body :", JSON.stringify(req.body, null, 2));
-
-
     if (req.method !== "POST") {
         console.log("Erreur : méthode non autorisée");
         return res.status(405).json({ error: "Méthode non autorisée" });
     }
 
     console.log("Requête POST acceptée, données reçues :", req.body);
-
-    if (!req.body) {
-        console.log("Erreur : le corps de la requête est vide ou mal formaté");
-        return res.status(400).json({ error: "Le corps de la requête est vide ou mal formaté" });
-    }
-
     const { name, email, message, recaptchaToken } = req.body;
 
-    // Vérification reCAPTCHA v2 (temporairement désactivée pour le test)
-    try {
-        const recaptchaResponse = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({
-                secret: process.env.RECAPTCHA_SECRET_KEY,
-                response: recaptchaToken,
-            }),
-        });
+    // Vérification reCAPTCHA (désactive pour test)
+    console.log("Token reCAPTCHA reçu :", recaptchaToken);
 
-        const recaptchaData = await recaptchaResponse.json();
-        console.log("Réponse reCAPTCHA:", recaptchaData);
-
-        if (!recaptchaData.success) {
-            console.log("Échec de la vérification reCAPTCHA");
-            return res.status(400).json({ error: "Échec de la vérification reCAPTCHA", details: recaptchaData });
-        }
-    } catch (error) {
-        console.error("Erreur lors de la requête reCAPTCHA:", error);
-        return res.status(500).json({ error: "Erreur lors de la requête reCAPTCHA", details: error.message });
-    }
-
-    // Configuration de Nodemailer
+    // Configuration Nodemailer
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -67,4 +60,5 @@ export default async function handler(req, res) {
     } catch (error) {
         console.error("Erreur d'envoi d'email:", error);
         res.status(500).json({ message: "Erreur lors de l'envoi de l'email", error: error.message });
-    }}
+    }
+}
