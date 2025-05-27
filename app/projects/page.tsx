@@ -12,7 +12,7 @@ export default async function ProjectsPage() {
   const featured = allProjects.find((project) => project.slug === "portfolio")!;
   const top2 = allProjects.find((project) => project.slug === "GVH")!;
   const top3 = allProjects.find((project) => project.slug === "Infoclimat")!;
-  const top4 = allProjects.find((project) => project.slug === "Cave à vin")!;
+  const top4 = allProjects.find((project) => project.slug === "Cave-a-vin")!;
   const veilleInformatique = allProjects.find((project) => project.slug === "veille-informatique")!;
   const sorted = allProjects
     .filter((p) => p.published)
