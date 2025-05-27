@@ -12,6 +12,7 @@ export default async function ProjectsPage() {
   const featured = allProjects.find((project) => project.slug === "portfolio")!;
   const top2 = allProjects.find((project) => project.slug === "GVH")!;
   const top3 = allProjects.find((project) => project.slug === "Infoclimat")!;
+  const top4 = allProjects.find((project) => project.slug === "Cave à vin")!;
   const veilleInformatique = allProjects.find((project) => project.slug === "veille-informatique")!;
   const sorted = allProjects
     .filter((p) => p.published)
@@ -20,6 +21,7 @@ export default async function ProjectsPage() {
         project.slug !== featured.slug &&
         project.slug !== top2.slug &&
         project.slug !== top3.slug &&
+        project.slug !== top4.slug &&
         project.slug !== veilleInformatique.slug,
     )
     .sort(
